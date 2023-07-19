@@ -16,7 +16,7 @@ class Led{//建立类
     void off();//类的成员函数，公共成员函数可以在类的外面调用
 //    int ledPin=2;//公共成员变量
     int getledPin();//测试通过公共成员函数可以在将私有成员变量在类外使用
-
+    void change_ledPin(int userLedPin);
 
    private://类外部无法使用但是，类的内部可以使用
     int ledPin=2;//私有成员变量
@@ -56,10 +56,19 @@ int Led::getledPin(){
   return ledPin;
 }
 
+void Led::change_ledPin(int userLedPin){
+  ledPin = userLedPin;
+  pinMode(ledPin,OUTPUT);
+  Serial.println("void Led::change_ledPin(int userLedPin)---更改完成");
+}
+
 void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once:
   Led myLed;//建立Led类的对象 //有作用域 //故当setup执行完后此对象就没了，但在此之前会检查一下类中有没有析构函数，有的话先执行析构函数再删除
+  myLed.change_ledPin(3); 
+  Serial.print("验证更改: "); Serial.println(myLed.getledPin());//获取更改后的值，以验证
+  
   Led myLed2(7);//控制7号引脚led
   for(int i=0;i<3;i++)
   {
