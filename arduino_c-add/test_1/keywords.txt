@@ -1,0 +1,35 @@
+#######################################
+# Arduino LED库 关键字
+# 太极创客 / www.taichi-maker.com
+#######################################
+
+#######################################
+# 数据类型/Datatypes (KEYWORD1)
+#######################################
+
+Led	KEYWORD1
+PwmLed	KEYWORD1
+
+#######################################
+# 函数/Functions (KEYWORD2)
+#######################################
+
+on	KEYWORD2
+off	KEYWORD2
+getLedPin	KEYWORD2
+change_ledPin	KEYWORD2
+
+#######################################
+# 其它关键字测试演示
+#######################################
+testKEYWORD1	KEYWORD1
+testKEYWORD2	KEYWORD2
+wei	KEYWORD3
+
+da	LITERAL1
+testLITERAL2	LITERAL2
+
+testRESERVED_WORD	RESERVED_WORD
+zhang_2	RESERVED_WORD_2
+testDATA_TYPE	DATA_TYPE
+yu	PREPROCESSOR
