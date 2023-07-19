@@ -1,7 +1,7 @@
 /*弹幕说，构造函数名称和类名称相同*/
 
 class Led{//建立类
-  public://在pulic后的是公共成员函数，公共成员函数可以在类的外面调用
+  public://在pulic后的是公共成员函数（变量），公共成员函数(变量)可以在类的外面调用
   /*//构造函数-无返回值*/ //注意：构造函数不可在类的外面调用
   //非必须的
     Led();//构造函数  ////执行完这个//Led myLed;建立Led类的对象 后马上执行Led();//构造函数
@@ -14,7 +14,12 @@ class Led{//建立类
 
     void on();//类的成员函数，公共成员函数可以在类的外面调用
     void off();//类的成员函数，公共成员函数可以在类的外面调用
-    int ledPin=2;//公共成员变量
+//    int ledPin=2;//公共成员变量
+    int getledPin();//测试通过公共成员函数可以在将私有成员变量在类外使用
+
+
+   private://类外部无法使用但是，类的内部可以使用
+    int ledPin=2;//私有成员变量
 };
 
 //为构造函数里的变量赋值
@@ -47,6 +52,10 @@ void Led::on(){//on()属于Led类
   digitalWrite(ledPin,HIGH);
 }
 
+int Led::getledPin(){
+  return ledPin;
+}
+
 void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once:
@@ -61,6 +70,17 @@ void setup() {
     myLed2.off();
     delay(1000);
   }
+
+
+/*以下，测试公共成员变量可以在类外使用*/
+//  int myLed2Pin=myLed.ledPin;
+//  Serial.print("myLed2Pin: ");Serial.println(myLed2Pin);
+/*以上，测试公共成员变量可以在类外使用*/
+
+/*以下，测试通过公共成员函数可以在将私有成员变量在类外使用*/
+  int myLed2Pin=myLed.getledPin();
+  Serial.print("myLed2Pin: ");Serial.println(myLed2Pin);
+/*以上，测试通过公共成员函数可以在将私有成员变量在类外使用*/
 }
 
 void loop() {
