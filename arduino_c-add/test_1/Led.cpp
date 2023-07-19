@@ -39,3 +39,12 @@ void Led::change_ledPin(int userLedPin){
   pinMode(ledPin,OUTPUT);
   Serial.println("void Led::change_ledPin(int userLedPin)---更改完成");
 }
+
+void PwmLed::on(int userPwmVal){
+  pwmValue = userPwmVal;
+  analogWrite(getledPin(),pwmValue);//在子类中调用父类中的函数getledPin()
+}
+
+int PwmLed::getPwmVal(){
+  return pwmValue;
+}

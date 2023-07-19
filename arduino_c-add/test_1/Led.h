@@ -34,7 +34,16 @@ class Led{//建立类
 
 class PwmLed : public Led{//子类PwmLed继承自父类Led   public-描述子类和父类的继承类型的 /*这种最常用*/
 //只能继承Led的公共成员
-//继承自父类的成员在子类中也是公共的成员   
+//继承自父类的成员在子类中也是公共的成员 
+
+  public:
+    void on(int userPwmVal);//子类只认子类里面的这个on（）--->函数重载
+    int getPwmVal();
+
+  private:
+    int pwmValue = 0;
+
+  
 };//就算子类中啥也没有但不响使用
 
 #endif

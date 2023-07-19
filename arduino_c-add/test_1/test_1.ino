@@ -10,6 +10,9 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
+  for(int i=0;i<255;i++){
+    myPwmLed.on(i);
+    Serial.print("getPwmVal(): ");  Serial.println(myPwmLed.getPwmVal());
+    delay(10);
+  }
 }
