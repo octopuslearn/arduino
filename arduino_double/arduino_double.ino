@@ -1,66 +1,112 @@
-#include "OneButton.h"
 
 #define button1 2
+#define jiguang A2
 
-//按下GND有效
-OneButton btn1 = OneButton(
-  button1,  // Input pin for the button
-  true,        // Button is active LOW
-  true         // Enable internal pull-up resistor
-);
+
+const int arr1_size = 10;
+int arr1[arr1_size] = {0};
 
 
 void setup() {
   Serial.begin(9600);
-
-  btn1.setDebounceMs(10);//消抖
-  btn1.setClickMs(1500);//用于区分单击和多击，即500ms内记录按下几次
-  btn1.setPressMs(3000);//长按时间判定，800ms后算长按
-  
-  
-  btn1.attachClick(btnattachClick);//单击
-  btn1.attachDoubleClick(btnattachDoubleClick);//双击
-  btn1.attachMultiClick(btnattachMultiClick);//多击
-  btn1.attachLongPressStart(btnattachLongPressStart);//按住按键800ms后触发
-  // btn1.attachDuringLongPress(btnattachDuringLongPress);//按住按钮定期触发
-  btn1.attachLongPressStop(btnattachLongPressStop);//长时间按住按钮松开时触发
-  // put your setup code here, to run once:
-
+  pinMode(button1, INPUT_PULLUP);
+  pinMode(jiguang, INPUT);
 }
 
 void loop() {
-  btn1.tick();
-  delay(10);
+  if(digitalRead(button1) == LOW)
+  {
+    for(int i = 0;i < arr1_size;i++)
+    {
+      arr1[i] = analogRead(jiguang);
+      delay(50);
+    }
+    Serial.print("Befor Sorting ");
+    printArray(arr1, arr1_size);//打印读取到的额数据
+
+    getValue(arr1, arr1_size, true);//
+
+
+/*以下，为啥这样就可以更改，数值顺序，因为指针吗*/
+    // bubbleSort(arr1, arr1_size);//气泡排序
+    // Serial.print("After Sorting ");
+    // printArray(arr1, arr1_size);//打印读取到的额数据
+/*以上，为啥这样就可以更改，数值顺序，因为指针吗*/
+  }
+
+
   // put your main code here, to run repeatedly:
 }
 
 
-void btnattachClick()
+
+//气泡排序 
+//第一轮，所需次数size-1
+void bubbleSort(int array1[], int size)
 {
-  Serial.println("单击");
-}
-void btnattachDoubleClick()
-{
-  Serial.println("双击");
-}
-void btnattachMultiClick()
-{
-  static int button_count = btn1.getNumberClicks();//获取点击次数
-  switch(button_count)
+  for(int onner = 0;onner < size-1; ++onner)
   {
-    // case 3:Serial.println("3击");break;
-    default:Serial.print("点击次数： ");Serial.println(button_count);break;
+    for(int inner = 0;inner <size - 1 - onner;++inner)
+    {
+      if(array1[inner] > array1[inner + 1])
+      {
+        int temp = array1[inner];
+        array1[inner] = array1[inner + 1];
+        array1[inner + 1] = temp;
+      }
+    }
   }
 }
-void btnattachLongPressStart()
+
+
+
+
+int getValue(int array1[], int size, bool printlog)
 {
-  Serial.println("按住按键800ms后触发");
+  bubbleSort(array1, size);//气泡排序
+
+  if(printlog)
+  {
+    Serial.print("After Sorting ");
+    printArray(arr1, arr1_size);
+  }
+
+  //对于size小于3的数组，选择全部数据
+  int arrayBegin = 0;
+  int arrayEnd = size - 1;
+
+  //对于size大于3的数组，去除前后百分之30的数据
+  if(size > 3)
+  {
+    arrayBegin = size*0.3;
+    arrayEnd = size * 0.7;
+  }
+
+  if(printlog)
+  {
+    Serial.print("arrayBegin: ");Serial.println(arrayBegin);
+    Serial.print("arrayEnd: ");Serial.println(arrayEnd);
+  }
+  
+  int sum = 0;
+  for(int i = arrayBegin;i < arrayEnd;i++)
+  {
+    sum += arr1[i];
+  }
+  int average = sum / (arrayEnd-arrayBegin);
+  if(printlog)
+  {
+    Serial.print("average: ");Serial.println(average);
+  }
+  return average;
 }
-void btnattachDuringLongPress()
+
+
+void printArray(int arr1_befor[], int arr1_size_befor)
 {
-  Serial.println("按住按钮定期触发");
-}
-void btnattachLongPressStop()
-{
-  Serial.println("长时间按住按钮松开时触发");
+  for(int i = 0;i < arr1_size_befor;i++)
+  {
+    Serial.print(arr1_befor[i]);Serial.print(", ");
+  }
+  Serial.println();
 }
