@@ -1,112 +1,65 @@
 
-#define button1 2
-#define jiguang A2
+const byte pins[]={2,3,4,5,6};
+//结构体
+struct LED{
+  byte pin;
+  unsigned int interval;
+  unsigned long previousMillis;
+};
+//结构体数组
+LED led2 = {2, 2000, 0};
+LED led3 = {3, 3000, 0};
+LED led4 = {4, 4000, 0};
+LED led5 = {5, 5000, 0};
+LED led6 = {6, 6000, 0};
 
 
-const int arr1_size = 10;
-int arr1[arr1_size] = {0};
+
+LED leds[5]={led2,led3,led4,led5,led6};//用于存放引脚？？？
+byte ledsLength = sizeof(leds)/sizeof(leds[0]);//获取数组元素个数
 
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  pinMode(button1, INPUT_PULLUP);
-  pinMode(jiguang, INPUT);
-}
+  //demo1
+  //for(byte pin : pins)  pinMode(pin,OUTPUT);//此为C++。在每次循环迭代中，变量 pin 将会被赋值为 pins 容器中的一个引脚号，然后使用 pinMode 函数将该引脚设置为输出模式。
 
-void loop() {
-  if(digitalRead(button1) == LOW)
-  {
-    for(int i = 0;i < arr1_size;i++)
-    {
-      arr1[i] = analogRead(jiguang);
-      delay(50);
-    }
-    Serial.print("Befor Sorting ");
-    printArray(arr1, arr1_size);//打印读取到的额数据
-
-    getValue(arr1, arr1_size, true);//
-
-
-/*以下，为啥这样就可以更改，数值顺序，因为指针吗*/
-    // bubbleSort(arr1, arr1_size);//气泡排序
-    // Serial.print("After Sorting ");
-    // printArray(arr1, arr1_size);//打印读取到的额数据
-/*以上，为啥这样就可以更改，数值顺序，因为指针吗*/
-  }
-
-
-  // put your main code here, to run repeatedly:
+  //demo2
+  for(LED led : leds) pinMode(led.pin, OUTPUT);//将leds数组中的每一个设置为输出模式
 }
 
 
-
-//气泡排序 
-//第一轮，所需次数size-1
-void bubbleSort(int array1[], int size)
+void loop()
 {
-  for(int onner = 0;onner < size-1; ++onner)
+  //demo1
+  //onLed();
+
+  //demo2
+  multitaskLED();
+}
+
+//每过1天亮一盏灯
+void onLed()
+{
+  // unsigned long interval = 24*60*60*1000L;//一天，单位1ms  
+  unsigned long interval = 1000L;//一天，单位1ms 
+  for(byte pin : pins)
   {
-    for(int inner = 0;inner <size - 1 - onner;++inner)
+    if(millis() >= pin*interval) digitalWrite(pin, HIGH);//当前时间大于引脚*一天的毫秒数，点亮相应的灯，由于教程上的灯连接到2引脚，所以第二天的时候才点亮第一盏灯
+  }
+}
+
+void multitaskLED()
+{
+  unsigned long currentMillis = millis();//当前时间
+
+  for(byte i = 0;i<ledsLength;i++)
+  {
+    if(currentMillis - leds[i].previousMillis >= leds[i].interval)//到达时间间隔
     {
-      if(array1[inner] > array1[inner + 1])
-      {
-        int temp = array1[inner];
-        array1[inner] = array1[inner + 1];
-        array1[inner + 1] = temp;
-      }
+      leds[i].previousMillis = currentMillis;//更新当前值
+      digitalWrite(leds[i].pin, !digitalRead(leds[i].pin));
     }
   }
-}
-
-
-
-
-int getValue(int array1[], int size, bool printlog)
-{
-  bubbleSort(array1, size);//气泡排序
-
-  if(printlog)
-  {
-    Serial.print("After Sorting ");
-    printArray(arr1, arr1_size);
-  }
-
-  //对于size小于3的数组，选择全部数据
-  int arrayBegin = 0;
-  int arrayEnd = size - 1;
-
-  //对于size大于3的数组，去除前后百分之30的数据
-  if(size > 3)
-  {
-    arrayBegin = size*0.3;
-    arrayEnd = size * 0.7;
-  }
-
-  if(printlog)
-  {
-    Serial.print("arrayBegin: ");Serial.println(arrayBegin);
-    Serial.print("arrayEnd: ");Serial.println(arrayEnd);
-  }
-  
-  int sum = 0;
-  for(int i = arrayBegin;i < arrayEnd;i++)
-  {
-    sum += arr1[i];
-  }
-  int average = sum / (arrayEnd-arrayBegin);
-  if(printlog)
-  {
-    Serial.print("average: ");Serial.println(average);
-  }
-  return average;
-}
-
-
-void printArray(int arr1_befor[], int arr1_size_befor)
-{
-  for(int i = 0;i < arr1_size_befor;i++)
-  {
-    Serial.print(arr1_befor[i]);Serial.print(", ");
-  }
-  Serial.println();
 }
