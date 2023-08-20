@@ -4,7 +4,8 @@ unsigned int length = 0;
 
 void showAll(unsigned int eepromLength);
 void resetAll(unsigned int eepromLength, byte value = 255);
-
+//由于EEPROM写入次数有限制，而读无限制，所以在写之前读一下，倘若和要写的值一样就不用写了，否则再写--->用EEPROM.update();
+void restAllUpdateOnly(unsigned int eepromLength, byte value = 234);
 
 
 
@@ -26,7 +27,9 @@ void loop()
   //demo2
   // showAll(length);//从EEPROM中读取1个字节
   //demo3
-  eepromOperator();//此运算符允许像数组一样使用标识符。EEPROM单元可以使用此方法直接读取和写入
+  // eepromOperator();//此运算符允许像数组一样使用标识符。EEPROM单元可以使用此方法直接读取和写入
+  //demo4
+  restAllUpdateOnly(length, 234);
 }
 
 
@@ -75,6 +78,8 @@ void resetAll(unsigned int eepromLength, byte value = 255)
 /*#####以上，EEPROM.write();每写1次3.3-5ms。如果写在loop中基本上5分钟就废了#####*/
 
 
+
+//由于EEPROM写入次数有限制，而读无限制，所以在写之前读一下，倘若和要写的值一样就不用写了，否则再写--->用EEPROM.update();
 //此运算符允许像数组一样使用标识符。EEPROM单元可以使用此方法直接读取和写入
 void eepromOperator()
 {
@@ -83,4 +88,16 @@ void eepromOperator()
     EEPROM[0] = 124;
   }
   Serial.print(" EEPROM[0]: ");Serial.println(EEPROM[0]);
+}
+
+
+
+//由于EEPROM写入次数有限制，而读无限制，所以在写之前读一下，倘若和要写的值一样就不用写了，否则再写--->用EEPROM.update();
+void restAllUpdateOnly(unsigned int eepromLength, byte value = 234)
+{
+  for(int add = 0;add < eepromLength;add++)
+  {
+    EEPROM.update(add, value);
+  }
+  showAll(eepromLength);
 }
