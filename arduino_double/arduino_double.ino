@@ -1,13 +1,12 @@
-long seconds = 0;
-
+int a[200] = {0};//200*2 = 400 bytes
 void setup()
 {
   Serial.begin(9600);
-//  seconds = 24*60*60;//19:29:46.231 -> 20864,,,明显错误了正确结果是86400。
-  //错误的理由是24*60*60是整数相乘结果是整数，86400超了整数范围，所以是20864
-  /*解决办法，24*60*60L加个L*/
-  seconds = 24*60*60L;
-  Serial.println(seconds);
+  Serial.println("");//RAM-188
+
+  //在没有for这条语句前RAM-188,有了for这条语句后RAM-588
+  //这是因为编译器看到变量a声明，但是没有使用（即没有for）时将变量a给删除了
+  for(int i : a) Serial.println(i);//RAM-588(188+400)
 }
 
 void loop()
